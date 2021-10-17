@@ -24,11 +24,10 @@ class UserFollowing(models.Model):
 # These fields should be linked to User model using ForeignKeys
 
 
-# class Post(models.Model):
-#     poster = models.ForeignKey(User, on_delete=models.CASCADE)
-# # TODO Other arguments to add to the poster field
+class Post(models.Model):
+    poster = models.ForeignKey(User, on_delete=models.CASCADE)
+# TODO Other arguments to add to the poster field
 
-# # TODO should I use textField or CharField in this case?
-#     content = models.TextField(on_delete=models.CASCADE)
-#     date_time_created = models.DateTimeField(default=timezone.now)
-#     likes = models.IntegerField(default=0)
+    content = models.TextField()
+    date_time_created = models.DateTimeField(default=timezone.now)
+    likes = models.IntegerField(default=0)
