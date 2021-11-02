@@ -1,0 +1,64 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+
+            <h3>All posts</h3>
+
+            <div class="card" id="load-all-posts">
+
+                <div>
+                    {% if my_posts %}
+                    {% for post in my_posts %}
+                    <div class="card-hearder"><strong id="poster-username">{{ post.poster }}</strong> @ <small
+                            id="poster-id">
+                            {{ post.poster_id }}</small>
+                        {{ post.time_posted }}</div>
+                    <br>
+                    <div class="card-body">
+
+                        <p>{{ post.content }}</p>
+
+                        <button type="button" class="btn btn-success">
+                            Likes <span class="badge badge-light">{{ post.likes }}</span>
+
+                        </button>
+                    </div>
+
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <button type="button" class="btn btn-primary">
+                Follows <span class="badge badge-light">{{ num_follows }}</span>
+                <span class="sr-only">unread messages</span>
+            </button>
+            <button type="button" class="btn btn-primary">
+                Followers <span class="badge badge-light">{{ num_followers }}</span>
+                <span class="sr-only">unread messages</span>
+            </button>
+
+
+            <div>
+                <button type="button" class="btn btn-primary" id="follow-unfollow">Follow</button>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'network/userpage.js' %}"></script>
+
+{% endblock %}
