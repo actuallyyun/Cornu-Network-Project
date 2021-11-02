@@ -1,5 +1,53 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-    TODO
+<div id="post-view">
+    <h3>Add a new post</h3>
+    <div class="form-group">
+        <form id="post-form">
+            <div class="form-grop">
+                <textarea class="form-control" name="" id="post-content" cols="30" rows="10"
+                    placeholder="What's happening?'"></textarea>
+                <input id="submit-post" type="submit" class="btn btn-primary">
+                <small id="error-messages"></small>
+        </form>
+    </div>
+
+</div>
+
+<div class="card" id="load-all-posts">
+    <h3>All posts</h3>
+    <div>
+        {% if posts %}
+        {% for post in posts %}
+        <div class="card-hearder">
+            <a href="{% url 'userpage' user_id=post.poster_id %}"> <strong>@{{ post.poster }}</strong>
+
+            </a>
+            {{ post.time_posted }}
+        </div>
+        <br>
+        <div class="card-body">
+
+            <p>{{ post.content }}</p>
+
+
+            <button type="button" class="btn btn-success">
+                Likes <span class="badge badge-light">{{ post.likes }}</span>
+                <span class="sr-only">unread messages</span>
+            </button>
+        </div>
+
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+</div>
+{% endblock %}
+
+
+{% block script %}
+<script src="{% static 'network/network.js' %}"></script>
+
 {% endblock %}
