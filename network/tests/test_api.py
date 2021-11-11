@@ -4,6 +4,8 @@ from django.test.client import Client
 from network.models import *
 import json
 
+from network.views import following
+
 
 class TestMakePostAPI(TestCase):
     # Setup test data
@@ -67,3 +69,100 @@ class TestMakePostAPI(TestCase):
                          HTTP_ACCEPT='application/json')
         followed_user_post = json.loads(response.content)
         self.assertEqual(len(followed_user_post), 2)
+
+
+class TestIsFollowingAPI(TestCase):
+
+    def test_is_following_or_not(self):
+        # Test the is_following API route
+        # Setup test data
+        u1 = User.objects.create(username="a")
+        u2 = User.objects.create(username="b")
+        u3 = User.objects.create(username="c")
+        UserFollowing.objects.create(user=u1, following_user=u2)
+
+        # Use test client and force logi
+        c = Client()
+        c.force_login(u1)
+
+        # u1 follows u2 api returns true
+        response = c.get("/mypage/2/is_following/",
+                         HTTP_ACCEPT="application/json")
+        self.assertEqual(json.loads(response.content)["isFollowing"], True)
+
+        # u1 is following u3 api returns false
+        response = c.get("/mypage/3/is_following/",
+                         HTTP_ACCEPT="application/json")
+        self.assertEqual(json.loads(response.content)["isFollowing"], False)
+
+
+class TestFollowUserAPI(TestCase):
+
+    def test_request_method_is_put(self):
+        c = Client()
+        u1 = User.objects.create(username="a")
+        u2 = User.objects.create(username="b")
+        c.force_login(u1)
+        response = c.get("/mypage/2/follow_user/follow",
+                         HTTP_ACCEPT="application/json")
+        self.assertEqual(json.loads(response.content)[
+                         'error'], 'PUT request required')
+
+    def test_follow_user_correcty(self):
+        # Create test data
+        c = Client()
+        u1 = User.objects.create(username="a")
+        u2 = User.objects.create(username="b")
+        c.force_login(u1)
+
+        response = c.put("/mypage/2/follow_user/follow",
+                         HTTP_ACCEPT="application/json")
+
+        # Assert the correct Jason respons and the data is created
+        self.assertEqual(json.loads(response.content)[
+                         'message'], 'Followed successfully')
+        self.assertTrue(UserFollowing.objects.filter(
+            user=u1, following_user=u2).exists())
+
+    def test_unfollow_user_correcty(self):
+        # Create test data
+        c = Client()
+        u1 = User.objects.create(username="a")
+        u2 = User.objects.create(username="b")
+        UserFollowing.objects.create(user=u1, following_user=u2)
+        c.force_login(u1)
+
+        response = c.put("/mypage/2/follow_user/unfollow",
+                         HTTP_ACCEPT="application/json")
+
+        # Assert the correct Jason respons and the data is created
+        self.assertEqual(json.loads(response.content)[
+                         'message'], 'Unfollowed successfully')
+        self.assertFalse(UserFollowing.objects.filter(
+            user=u1, following_user=u2).exists())
+
+
+class TestEditPostAPI(TestCase):
+
+    def test_request_method_is_put(self):
+        # Create test data
+        c = Client()
+        u1 = User.objects.create(username="a")
+        c.force_login(u1)
+
+        response = c.get("/editpost/", HTTP_ACCEPT="application/json")
+        self.assertEqual(json.loads(response.content)[
+                         'error'], 'PUT request required')
+
+    def test_update_post_correctly(self):
+        # Create test data
+
+        c = Client()
+        u1 = User.objects.create(username="a")
+        c.force_login(u1)
+
+        p1 = Post.objects.create(poster=u1, content="original texts")
+        response = c.put("/editpost/", content_type="application/json",
+                         data={"content": "updated texts", "post_id": "1"})
+        self.assertEqual(json.loads(response.content)['ok'], True)
+        self.assertEqual(Post.objects.get(pk=1).content, "updated texts")
