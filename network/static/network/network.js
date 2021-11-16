@@ -1,8 +1,9 @@
+// This scipts manages the post form and deals with the post request
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // When Post button is clicked, call send_post function
     const form = document.getElementById('post-form')
-    console.log(form)
     form.addEventListener('submit', (event) => {
         // stop form submission
         event.preventDefault()

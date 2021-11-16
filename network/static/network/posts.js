@@ -1,3 +1,4 @@
+// This scipts deals with editing posts function.I t also decides when to or not to show the edit button.
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -17,23 +18,23 @@ const csrftoken = getCookie('csrftoken');
 
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Select all the like buttons
+    // Select all the edit buttons, postforms, etc
 
     const editButtons = document.getElementsByClassName('edit-post-button')//Selected all the buttons
     const editPostForm = document.getElementsByClassName('edit-post-form')//Select all the forms
     const all_post_id = document.getElementsByClassName('post-id-edit')
     const all_edit_post_view = document.getElementsByClassName('edit-post-view')
-    console.log(all_post_id)
 
+
+    // Loop through all the edit buttons and do bad things to them: add an eventlistener, create a new textarea, hide the original post...
 
     for (let i = 0; i < editButtons.length; i++) { // loop through each one and add an eventlistener
         editButtons[i].onclick = function () {
             // When edit button is clicked,the content of the post should be replaced with a textarea where its prepopulated with the existing post
             const thisEditPostForm = editPostForm[i]
-            console.log(thisEditPostForm)
-            console.log(i)
 
             // Create a textarea with prepolutated text
+            // TODO currently this textarea looks terrible. How can some CSS make it look prettier? 
             const existingPost = document.createElement('textarea')
             existingPost.setAttribute('id', 'edit-post')
             existingPost.innerText = editButtons[i].parentElement.querySelector('#post-content').innerText
@@ -49,16 +50,11 @@ document.addEventListener('DOMContentLoaded', function () {
             thisEditPostForm.appendChild(existingPost)
             thisEditPostForm.appendChild(submitEditing)
 
-            console.log(thisEditPostForm)
-
             all_edit_post_view[i].appendChild(thisEditPostForm)
-
-            console.log(all_edit_post_view[i])
             all_edit_post_view[i].style.display = 'block'
 
             // Hide the edit button and its parent element
             editButtons[i].parentElement.style.display = 'none'
-            console.log(all_post_id[i].innerText)
 
             thisEditPostForm.addEventListener('submit', (event) => {
                 // stop form submission
