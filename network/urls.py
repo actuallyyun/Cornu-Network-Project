@@ -15,7 +15,6 @@ urlpatterns = [
     # API Routes
     path('makepost/', views.makepost, name='makepost'),
     path('mypage/makepost/', views.makepost, name='makepost'),
-    path('getposts/<str:group>/', views.getposts, name='getposts'),
     path('mypage/<int:following_id>/follow_user/<str:changes>',
          views.follow_user, name='follow_user'),
     path('follow_user/<int:following_id>/<str:changes>',

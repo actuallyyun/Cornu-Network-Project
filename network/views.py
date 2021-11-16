@@ -41,7 +41,7 @@ def makepost(request):
         return JsonResponse({"error": "POST request required",
                              'ok': False}, status=200)
     else:
-        # Get contents
+        # Get contents and make the post
         data = json.loads(request.body)
         content = data.get("content", "")
 
@@ -49,35 +49,6 @@ def makepost(request):
         post.save()
 
         return JsonResponse({"message": "Post successfully.", "ok": True}, status=201)
-
-
-@login_required
-def getposts(request, group):
-
-    # API view Filter posts returned based on the post group
-    if group == "all_users":
-        posts = Post.objects.order_by(
-            "-date_time_created").all()
-    elif group == "this_user":
-        posts = Post.objects.filter(poster=request.user).order_by(
-            "-date_time_created")
-    elif group == "followed_user":
-        followed_user = request.user.follows_user_object()
-       # Then I get a list of querysets, each queryset is the posts objects of one followed user
-        # covert a list of querysets to a list of post objects
-        posts = []
-        for u in followed_user:
-            post_queryset = Post.objects.filter(poster=u).order_by(
-                "-date_time_created")
-            for p in post_queryset:
-                posts.append(p)
-
-    else:
-        return JsonResponse({"error": "Invalid group."}, status=400)
-
-    # Return posts in Jsonreponse
-
-    return JsonResponse([post.serialize() for post in posts], safe=False)
 
 
 def login_view(request):
@@ -134,7 +105,7 @@ def register(request):
 
 @login_required
 def following(request):
-    # TODO This page displays posts from users that this user followed
+    # This page displays posts from users that this user is following at the moment
     posts = request.user.posts_followed_user()
     p = Paginator(posts, 10)
     page_number = request.GET.get('page')
@@ -147,7 +118,7 @@ def following(request):
 
 @login_required
 def mypage(request):
-    # This page displays all the posts from this user itself
+    # This page displays all the posts from this user herself
     my_posts = Post.objects.filter(poster=request.user)
     p = Paginator(my_posts, 10)
     page_number = request.GET.get('page')
@@ -179,7 +150,7 @@ def users_view(request, user_id):
 @csrf_exempt
 @login_required
 def follow_user(request, following_id, changes):
-    # Recieved Json data and process it. Create or delete userfollowing object accordingly
+    # API view Recieved Json data and process it. Create or delete userfollowing object accordingly
     if request.method != "PUT":
         return JsonResponse({
             "error": "PUT request required", 'ok': False}, status=400)
@@ -206,7 +177,7 @@ def follow_user(request, following_id, changes):
 
 @login_required
 def is_following(request, following_id):
-    # This function recieves Json data and check if the current user is following the following_id user
+    # API view This function recieves Json data and check if the current user is following the following_id user
     # It returns True if it is, Flase if not
     if UserFollowing.objects.filter(user=request.user, following_user_id=following_id).exists():
         return JsonResponse({"isFollowing": True}, status=201)
@@ -215,8 +186,7 @@ def is_following(request, following_id):
 
 
 def edit_post(request):
-    # This function handles the edit post request.
-    # It needs post id, and content
+    # API view This function handles the edit post request.
 
     if request.method != "PUT":
         return JsonResponse({"error": "PUT request required",
@@ -243,13 +213,13 @@ def like_unlike(request, action):
         post = Post.objects.get(pk=post_id)
 
         if action == "like":
-            # TODO create a PostLiking instance, need post id and user id
+            # Create a PostLiking instance, need post id and user id
             post_liking = PostLiking.objects.create(
                 user=request.user, post=post)
             post_liking.save()
             return JsonResponse({"message": "Liked successfully", "ok": True}, status=201)
         elif action == "unlike":
-            # TODO find the PostLiking instance and delete it from the database
+            # Find the PostLiking instance and delete it from the database
             post_unlike = PostLiking.objects.filter(
                 user=request.user, post=post)
             post_unlike.delete()
