@@ -35,9 +35,11 @@ class IndexViewTest(TestCase):
         # Check if the template is correct
         self.assertTemplateUsed(response, 'network/index.html')
 
+# TODO this test run into erros
+
     def test_navbar_urls_corret(self):
         c = Client()
         user_a = User.objects.get(id=1)
         c.force_login(user_a)
-        response = c.get(reverse('userpage'), args=[1])
+        response = c.get(reverse('mypage'))
         self.assertEqual(response.status_code, 200)

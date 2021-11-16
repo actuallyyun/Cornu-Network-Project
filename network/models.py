@@ -44,7 +44,10 @@ class UserFollowing(models.Model):
     following_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="followers")
 
-    # TODO A user shouldn't be able to follow herself
+    # TODO A user shouldn't be able to follow herself, add a constraint to the database following_user != user
+
+    class Meta:
+        unique_together = ['user', 'following_user']
 
     def __str__(self):
         return f'{self.user}'
@@ -53,11 +56,9 @@ class UserFollowing(models.Model):
 class Post(models.Model):
     poster = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="posts")
-    # TODO Other arguments to add to the poster field
 
     content = models.TextField()
     date_time_created = models.DateTimeField(default=timezone.now)
-    likes = models.IntegerField(default=0)
 
     def serialize(self):
         return {
@@ -72,3 +73,16 @@ class Post(models.Model):
 
     def poster_id(self):
         return User.objects.get(username=self.poster).id
+
+    def likes(self):
+        return self.liked.all().count()
+
+
+class PostLiking(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="liking")
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, related_name="liked")
+
+    class Meta:
+        unique_together = ['user', 'post']

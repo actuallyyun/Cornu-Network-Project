@@ -40,10 +40,6 @@ class UserFollowingTest(TestCase):
         self.assertEqual(len(user1_posts), 2)
         self.assertEqual(user1.posts_content()[0], "test1")
 
-    def test_post_likes_default_zero(self):
-        post1 = Post.objects.get(id=1)
-        self.assertEqual(post1.likes, 0)
-
     def test_serialize_returns_dictionary(self):
         post1 = Post.objects.get(id=1)
         self.assertTrue((type(post1.serialize()) is dict), True)

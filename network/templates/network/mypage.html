@@ -1,0 +1,120 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="container">
+    <div id="post-view">
+        <h3>Add a new post</h3>
+        <div class="form-group">
+            <form id="post-form">
+                {% csrf_token %}
+                <div class="form-grop">
+                    <textarea class="form-control" name="" id="post-content" cols="30" rows="10"
+                        placeholder="What's happening?"></textarea>
+                    <input id="submit-post" type="submit" class="btn btn-primary">
+                    <small id="error-messages"></small>
+            </form>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+
+            <h3>My posts</h3>
+
+            <div class="card" id="load-all-posts">
+
+                <div>
+                    {% if page_obj %}
+                    {% for post in page_obj %}
+                    {% if request.user.id == post.poster_id%}
+
+                    <div class="card-hearder" id="user-own-posts"><strong id="poster-username">{{ post.poster }}
+                        </strong> @ <small id="poster-id">
+                            {{ post.poster_id }}</small>
+                        {{ post.time_posted }}</div>
+                    <br>
+                    <div class="card-body">
+                        <div class="display-post-view">
+                            <p id="edit-post-content">{{ post.content }}</p>
+                            <button type="button" class="btn btn-primary edit-post-button">Edit</button>
+
+                        </div>
+                        <div class="edit-post-view">
+                            <form action="#" method="post" class="edit-post-form">
+                                <p class="post-id-edit" style="display:none">{{ post.id }}</p>
+                                {% csrf_token %}
+                            </form>
+                        </div>
+
+                        {% else %}
+                        <div class="card-hearder" id="other-users-posts"><strong id="poster-username">{{ post.poster
+                                }}</strong> @ <small id="poster-id">
+                                {{ post.poster_id }}</small>
+                            {{ post.time_posted }}</div>
+                        <br>
+                        <div class="card-body">
+
+                            <p>{{ post.content }}</p>
+
+                            <button type="button" class="btn btn-success">
+                                Likes <span class="badge badge-light">{{ post.likes }}</span>
+
+                                {% endif %}
+                        </div>
+
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; first</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+
+                            {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">next</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-primary">
+                    Follows <span class="badge badge-light">{{ num_follows }}</span>
+                    <span class="sr-only">unread messages</span>
+                </button>
+                <button type="button" class="btn btn-primary">
+                    Followers <span class="badge badge-light">{{ num_followers }}</span>
+                    <span class="sr-only">unread messages</span>
+                </button>
+
+
+                <div>
+                    <button type="button" class="btn btn-primary" id="follow-unfollow">Follow</button>
+
+                </div>
+
+            </div>
+
+
+
+        </div>
+
+    </div>
+    {% endblock %}
+
+    {% block script %}
+    <script src="{% static 'network/manageFollowing.js' %}"></script>
+    <script src="{% static 'network/posts.js' %}"></script>
+    <script src="{% static 'network/like.js' %}"></script>
+    <script src="{% static 'network/network.js' %}"></script>
+
+
+    {% endblock %}

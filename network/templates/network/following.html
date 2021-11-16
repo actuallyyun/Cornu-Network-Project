@@ -4,22 +4,21 @@
 {% block body %}
 <div>
     <div class="card" id="load-all-posts">
-        <h3>All posts</h3>
+        <h3>My feed</h3>
         <div>
             {% if page_obj %}
             {% for post in page_obj %}
-            <div class="card-hearder"><strong>{{ post.poster }}</strong> @{{ user.username }} {{ post.time_posted }}
+            <div class="card-hearder">
+                <a href="{% url 'users' user_id=post.poster_id %}"><strong>@{{ post.poster }}</strong> </a>
+                {{ post.time_posted }}
             </div>
             <br>
             <div class="card-body">
+                <p>{{ post.content }} </p>
+                <span class="badge badge-light like-unlike" style="color: red;display: inline;">&hearts;
+                </span><span class="likes-amount">{{ post.likes }}</span>
+                <span class="post-id-like" style="display: none;">{{ post.id }}</span>
 
-                <p>{{ post.content }}</p>
-
-
-                <button type="button" class="btn btn-success">
-                    Likes <span class="badge badge-light">{{ post.likes }}</span>
-                    <span class="sr-only">unread messages</span>
-                </button>
             </div>
 
             {% endfor %}
@@ -50,6 +49,8 @@
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'network/network.js' %}"></script>
+<script src="{% static 'network/posts.js' %}"></script>
+<script src="{% static 'network/like.js' %}"></script>
+
 
 {% endblock %}

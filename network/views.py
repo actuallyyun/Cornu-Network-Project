@@ -8,8 +8,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from .models import User, UserFollowing, Post
-from .forms import PostForm
+from .models import PostLiking, User, UserFollowing, Post
 from django.core.paginator import Paginator
 
 
@@ -33,13 +32,14 @@ def index(request):
         return HttpResponseRedirect(reverse("login"))
 
 
+@csrf_exempt
 @login_required
 def makepost(request):
 
     # API view Posting must be via POST method
     if request.method != "POST":
         return JsonResponse({"error": "POST request required",
-                             'ok': False}, status=400)
+                             'ok': False}, status=200)
     else:
         # Get contents
         data = json.loads(request.body)
@@ -146,8 +146,23 @@ def following(request):
 
 
 @login_required
-def userpage(request, user_id):
+def mypage(request):
     # This page displays all the posts from this user itself
+    my_posts = Post.objects.filter(poster=request.user)
+    p = Paginator(my_posts, 10)
+    page_number = request.GET.get('page')
+    page_obj = p.get_page(page_number)
+
+    return render(request, "network/mypage.html", {
+        "page_obj": page_obj,
+        "num_follows": request.user.num_follows(),
+        "num_followers": request.user.num_followers()
+    })
+
+
+@login_required
+def users_view(request, user_id):
+    # This view renders the page of a user
     my_posts = Post.objects.filter(poster=user_id)
     p = Paginator(my_posts, 10)
     page_number = request.GET.get('page')
@@ -155,8 +170,9 @@ def userpage(request, user_id):
 
     return render(request, "network/userpage.html", {
         "page_obj": page_obj,
-        "num_follows": request.user.num_follows(),
-        "num_followers": request.user.num_followers()
+        "num_follows": User.objects.get(pk=user_id).num_follows(),
+        "num_followers": User.objects.get(pk=user_id).num_followers(),
+        "user_id": user_id
     })
 
 
@@ -215,3 +231,41 @@ def edit_post(request):
         post.save()
 
         return JsonResponse({"message": "Edit post successfully.", "ok": True}, status=201)
+
+
+@csrf_exempt
+def like_unlike(request, action):
+    # This API handles like and unlike request through an PUT request
+    if request.method == "PUT":
+        # get the data
+        data = json.loads(request.body)
+        post_id = data.get("post_id", "")
+        post = Post.objects.get(pk=post_id)
+
+        if action == "like":
+            # TODO create a PostLiking instance, need post id and user id
+            post_liking = PostLiking.objects.create(
+                user=request.user, post=post)
+            post_liking.save()
+            return JsonResponse({"message": "Liked successfully", "ok": True}, status=201)
+        elif action == "unlike":
+            # TODO find the PostLiking instance and delete it from the database
+            post_unlike = PostLiking.objects.filter(
+                user=request.user, post=post)
+            post_unlike.delete()
+            return JsonResponse({"message": "Unliked successfully", "ok": True}, status=201)
+        else:
+            return JsonResponse({"error": "Unkown action.",
+                                 'ok': False}, status=400)
+
+    else:
+        return JsonResponse({"error": "PUT request required",
+                            'ok': False}, status=400)
+
+
+def is_liking(request, post_id):
+    # This API checks if the current user already liked the post or not
+    if PostLiking.objects.filter(user=request.user, post=post_id).exists():
+        return JsonResponse({"isLiking": True}, status=201)
+    else:
+        return JsonResponse({"isLiking": False}, status=200)
