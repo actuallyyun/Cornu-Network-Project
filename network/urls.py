@@ -19,7 +19,6 @@ urlpatterns = [
          views.follow_user, name='follow_user'),
     path('follow_user/<int:following_id>/<str:changes>',
          views.follow_user, name='follow_user'),
-
     path("users/<int:following_id>/is_following/",
          views.is_following, name="isfollowing"),
     path("editpost/", views.edit_post, name="editpost"),
