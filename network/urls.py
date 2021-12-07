@@ -27,7 +27,7 @@ urlpatterns = [
          views.is_liking, name='isliking'),
     path('following/is_liking/<int:post_id>',
          views.is_liking, name='isliking'),
-    path('users/is_liking/<int:post_id>',
+    path('mypage/is_liking/<int:post_id>',
          views.is_liking, name='isliking'),
     path('following/like_unlike/<str:action>',
          views.like_unlike, name='likeunlike'),

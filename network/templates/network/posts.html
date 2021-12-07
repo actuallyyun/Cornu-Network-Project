@@ -1,0 +1,59 @@
+<div class="col">
+    {% for post in page_obj %}
+    <div class="card post-cards">
+        <div class="display-post-view" data-poster-id="{{ post.poster_id }}">
+            <div class="card-header">
+                {% if request.user.id == post.poster_id %}
+                <a href="{% url 'mypage' %}"><strong>@{{ post.poster }}</strong></a>
+                {% else %}
+                <a href="{% url 'users' post.poster_id %}"> <strong>@{{ post.poster }}</strong></a>
+                {% endif %}
+                {{ post.time_posted }}
+            </div>
+            <div class="card-body">
+                <p>{{ post.content }}</p>
+                <span class="badge badge-light like-unlike" style="color: red;display: inline;"
+                    data-post-id="{{ post.id }}">&hearts;
+                </span><span class="likes-amount">{{ post.likes }}</span>
+                {% if request.user.id == post.poster_id %}
+                <button type="button" class="btn btn-primary edit-post-btn"
+                    style="align-items: flex-right;">Edit</button>
+                {% else %}
+                <button type="button" class="btn btn-primary edit-post-btn" style="display: none;">Edit</button>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="edit-post-view" style="display: none;">
+            <form method="put" class="edit-post-form" data-post-id="{{ post.id }}">
+                {% csrf_token %}
+                <div class=" form-group">
+                    <textarea cols="30" rows="10" class="form-control">{{ post.content }}</textarea>
+                    <input type="submit" class="btn btn-primary">
+                </div>
+            </form>
+
+        </div>
+    </div>
+    {% endfor %}
+
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+</div>

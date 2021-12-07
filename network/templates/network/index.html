@@ -2,106 +2,12 @@
 {% load static %}
 
 {% block body %}
-<div id="post-view">
-    <h3>Add a new post</h3>
-    <div class="form-group">
-        <form id="post-form" method="post">
-            {% csrf_token %}
-            <div class="form-grop">
-                <textarea class="form-control" name="" id="post-content" cols="30" rows="10"
-                    placeholder="What's happening?"></textarea>
-                <input id="submit-post" type="submit" class="btn btn-primary">
-                <small id="error-messages"></small>
-        </form>
-    </div>
-
-</div>
-
-<div class="card" id="load-all-posts">
-    <h3>All posts</h3>
-    <div>
-        {% if page_obj %}
-        {% for post in page_obj %}
-        {% if request.user.id == post.poster_id%}
-        <div class="card-hearder" id="user-own-posts">
-            <a href="{% url 'mypage' %}"> <strong>@{{ post.poster }}</strong>
-
-            </a>
-            {{ post.time_posted }}
-        </div>
-        <br>
-        <div class="card-body">
-
-            <p id="post-content">{{ post.content }}</p>
-
-
-            <span class="badge badge-light like-unlike" style="color: red;display: inline;">&hearts;
-            </span><span class="likes-amount">{{ post.likes }}</span>
-            <span class="post-id-like" style="display: none;">{{ post.id }}</span>
-
-            <button type="button" class="btn btn-primary edit-post-button"
-                style="align-items: flex-right;">Edit</button>
-
-
-        </div>
-        <div class="edit-post-view">
-            <form action="#" method="post" class="edit-post-form">
-                <p class="post-id-edit" style="display:none">{{ post.id }}</p>
-                {% csrf_token %}
-            </form>
-        </div>
-        {% else %}
-
-        <div class="card-hearder">
-            <a href="{% url 'users' post.poster_id %}"> <strong>@{{ post.poster }}</strong>
-
-            </a>
-            {{ post.time_posted }}
-        </div>
-        <br>
-        <div class="card-body">
-
-            <p>{{ post.content }}</p>
-
-
-            <span class="badge badge-light like-unlike" style="color: red;display: inline;">&hearts;
-            </span><span class="likes-amount">{{ post.likes }}</span>
-            <span class="post-id-like" style="display: none;">{{ post.id }}</span>
-
-
-        </div>
-
-        {% endif %}
-        {% endfor %}
-        {% endif %}
-    </div>
-    <div class="pagination">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-            {% endif %}
-
-            <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
-
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-            {% endif %}
-        </span>
-    </div>
-
-</div>
+{% include 'network/postform.html' %}
+<div class="row">
+    {% include 'network/posts.html' %}
 </div>
 {% endblock %}
 
-
 {% block script %}
-<script src="{% static 'network/network.js' %}"></script>
-<script src="{% static 'network/posts.js' %}"></script>
-<script src="{% static 'network/like.js' %}"></script>
-
-
+<script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

@@ -2,55 +2,17 @@
 {% load static %}
 
 {% block body %}
-<div>
-    <div class="card" id="load-all-posts">
-        <h3>My feed</h3>
-        <div>
-            {% if page_obj %}
-            {% for post in page_obj %}
-            <div class="card-hearder">
-                <a href="{% url 'users' user_id=post.poster_id %}"><strong>@{{ post.poster }}</strong> </a>
-                {{ post.time_posted }}
-            </div>
-            <br>
-            <div class="card-body">
-                <p>{{ post.content }} </p>
-                <span class="badge badge-light like-unlike" style="color: red;display: inline;">&hearts;
-                </span><span class="likes-amount">{{ post.likes }}</span>
-                <span class="post-id-like" style="display: none;">{{ post.id }}</span>
+<div class="col-12">
 
-            </div>
-
-            {% endfor %}
-            {% endif %}
-        </div>
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-
-                {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
-    </div>
-
+    <h3>My feed</h3>
+    {% include 'network/posts.html' %}
 </div>
 
 
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'network/posts.js' %}"></script>
-<script src="{% static 'network/like.js' %}"></script>
 
+<script src="{% static 'network/following.js' %}"></script>
 
 {% endblock %}

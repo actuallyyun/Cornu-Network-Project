@@ -124,7 +124,7 @@ def mypage(request):
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
 
-    return render(request, "network/mypage.html", {
+    return render(request, "network/userpage.html", {
         "page_obj": page_obj,
         "num_follows": request.user.num_follows(),
         "num_followers": request.user.num_followers()
@@ -185,6 +185,7 @@ def is_following(request, following_id):
         return JsonResponse({"isFollowing": False}, status=201)
 
 
+@csrf_exempt
 def edit_post(request):
     # API view This function handles the edit post request.
 

@@ -9,7 +9,8 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="{% static 'network/styles.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <script src="{% static 'network/api.js' %}"></script>
+    <script src="{% static 'network/like.js' %}"></script>
     {% block script %}
     {% endblock %}
 
@@ -24,9 +25,9 @@
         <div>
             <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
-                <li class="nav-item">
+                <li class="nav-item" data-user-id="{{ user.id }}">
                     <a class="nav-link" href="{% url 'mypage' %}">
-                        <strong id="current-username">{{ user.username }}</strong></a>
+                        <strong>{{ user.username }}</strong></a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
@@ -51,10 +52,11 @@
         </div>
     </nav>
 
-    <div class="container">
-        {% block body %}
-        {% endblock %}
-    </div>
+
+    {% block body %}
+    {% endblock %}
+
+
 </body>
 
 </html>

@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row">
+        <div class="col" id="post-form">
+            <h3>Add a new post</h3>
+            <div class="form-group">
+                <form class="post-form" method="post">
+                    {% csrf_token %}
+                    <div class="form-grop">
+                        <textarea class="form-control" name="" id="post-content" cols="30" rows="10"
+                            placeholder="What's happening?"></textarea>
+                        <input id="submit-post" type="submit" class="btn btn-primary">
+                        <small id="error-messages"></small>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

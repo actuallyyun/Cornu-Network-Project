@@ -2,81 +2,32 @@
 {% load static %}
 
 {% block body %}
-<div class="container">
+{% include 'network/postform.html' %}
+<div class="row">
+    <div class="col-8">
 
-    <div class="row">
-        <div class="col-sm-8">
-
-            <h3>All posts</h3>
-
-            <div class="card" id="load-all-posts">
-
-                <div>
-                    {% if page_obj %}
-                    {% for post in page_obj %}
-
-                    <div class="card-hearder" id="other-users-posts"><strong id="poster-username">
-                            {{ post.poster }}</strong> @ <small id="poster-id">
-                            {{ post.poster_id }}</small>
-                        {{ post.time_posted }}</div>
-                    <br>
-                    <div class="card-body">
-
-                        <p>{{ post.content }}</p>
-
-                        <span class="badge badge-light like-unlike" style="color: red;display: inline;">&hearts;
-                        </span><span class="likes-amount">{{ post.likes }}</span>
-                        <span class="post-id-like" style="display: none;">{{ post.id }}</span>
-
-                    </div>
-
-                    {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="pagination">
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                        {% endif %}
-
-                        <span class="current">
-                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                        </span>
-
-                        {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <button type="button" class="btn btn-primary">
-                Follows <span class="badge badge-light">{{ num_follows }}</span>
-            </button>
-            <button type="button" class="btn btn-primary">
-                Followers <span id="followers-num" class="badge badge-light">{{ num_followers }}</span>
-            </button>
-
-
-            <div style="margin-top: 1rem;">
-                <button type="button" class="btn btn-primary" id="follow-unfollow">Follow</button>
-
-            </div>
-
-        </div>
-
-
-
+        {% include 'network/posts.html' %}
     </div>
 
+    <div class="col-4">
+        <button type="button" class="btn btn-info btn-follows">
+            Follows <span class="badge badge-light">{{ num_follows }}</span>
+        </button>
+        <button type="button" class="btn btn-info ">
+            Followers <span class="badge badge-light badge-followers-num">{{ num_followers }}</span>
+        </button>
+
+
+        <div>
+            <button style="margin-top: 1rem;" type="button" class="btn btn-primary" id="follow-unfollow">Follow</button>
+        </div>
+
+    </div>
 </div>
+
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'network/manageFollowing.js' %}"></script>
-<script src="{% static 'network/like.js' %}"></script>
-
+<script src="{% static 'network/userpage.js' %}"></script>
+<script src="{% static 'network/index.js' %}"></script>
 {% endblock %}
