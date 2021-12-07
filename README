@@ -1,0 +1,7 @@
+# This is a social network application. Distribution code from the CS50W course.
+## Users can do the following things:
+### Register and sign in 
+### Make posts
+### Edit posts
+### Follow and unfollow other Users
+### Like and unlike other users' posts
