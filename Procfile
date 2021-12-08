@@ -1,1 +1,1 @@
-web: gunicorn --env DJANGO_SETTINGS_MODULE=project4.settings project4.wsgi
+web: gunicorn project4.wsgi
