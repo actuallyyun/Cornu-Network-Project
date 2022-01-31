@@ -2,3 +2,6 @@
 db.sqlite3
 migrations/
 .vscode/
+/venv
+ __pycache__
+ project4/staticfiles
