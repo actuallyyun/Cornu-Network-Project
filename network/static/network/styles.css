@@ -1,11 +1,12 @@
+
+body {
+    margin: 2rem;
+    padding: 2rem;
+}
+
 .card-body {
     border-bottom:violet dotted 1px;
     margin-bottom: 1rem;
 }
 
-.container {
-    margin-bottom: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 25px;
-    padding-right: 25px;
-}
+

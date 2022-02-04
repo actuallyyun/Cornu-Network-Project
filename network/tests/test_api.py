@@ -27,7 +27,7 @@ class TestMakePostAPI(TestCase):
 
     def test_makepost_api(self):
         c = Client()
-        api_testuser = User.objects.get(id=1)
+        api_testuser = User.objects.get(username="api_testuser1")
         c.force_login(api_testuser)
         # If request through GET, it returns false
         response = c.get('/makepost/')
@@ -45,8 +45,8 @@ class TestIsFollowingAPI(TestCase):
     def test_is_following_or_not(self):
         # Test the is_following API route
         # Setup test data
-        u1 = User.objects.create(username="a")
-        u2 = User.objects.create(username="b")
+        u1 = User.objects.create(username="a", pk=1)
+        u2 = User.objects.create(username="b", pk=2)
         u3 = User.objects.create(username="c")
         UserFollowing.objects.create(user=u1, following_user=u2)
 
@@ -80,8 +80,8 @@ class TestFollowUserAPI(TestCase):
     def test_follow_user_correcty(self):
         # Create test data
         c = Client()
-        u1 = User.objects.create(username="a")
-        u2 = User.objects.create(username="b")
+        u1 = User.objects.create(username="a", pk=1)
+        u2 = User.objects.create(username="b", pk=2)
         c.force_login(u1)
 
         response = c.put("/mypage/2/follow_user/follow",
@@ -96,8 +96,8 @@ class TestFollowUserAPI(TestCase):
     def test_unfollow_user_correcty(self):
         # Create test data
         c = Client()
-        u1 = User.objects.create(username="a")
-        u2 = User.objects.create(username="b")
+        u1 = User.objects.create(username="a", pk=1)
+        u2 = User.objects.create(username="b", pk=2)
         UserFollowing.objects.create(user=u1, following_user=u2)
         c.force_login(u1)
 
@@ -142,10 +142,10 @@ class TestIsLikingAPI(TestCase):
     def test_is_liking_or_not_correctly(self):
         # Test the is_following API route
         # Setup test data
-        u1 = User.objects.create(username="a")
-        u2 = User.objects.create(username="b")
-        p1 = Post.objects.create(poster=u2)
-        p2 = Post.objects.create(poster=u2)
+        u1 = User.objects.create(username="a", pk=1)
+        u2 = User.objects.create(username="b", pk=2)
+        p1 = Post.objects.create(poster=u2, pk=1)
+        p2 = Post.objects.create(poster=u2, pk=2)
         PostLiking.objects.create(user=u1, post=p1)
 
         # Use test client and force logi
@@ -181,8 +181,8 @@ class TestLikeUnlikeAPI(TestCase):
         # Setup test data
         u1 = User.objects.create(username="a")
         u2 = User.objects.create(username="b")
-        p1 = Post.objects.create(poster=u2)
-        p2 = Post.objects.create(poster=u2)
+        p1 = Post.objects.create(poster=u2, pk=1)
+        p2 = Post.objects.create(poster=u2, pk=2)
         PostLiking.objects.create(user=u1, post=p2)
 
         c = Client()

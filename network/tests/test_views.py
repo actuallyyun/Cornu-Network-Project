@@ -23,7 +23,7 @@ class IndexViewTest(TestCase):
 
     def test_signedin_use_correct_template(self):
         c = Client()
-        user_a = User.objects.get(id=1)
+        user_a = User.objects.get(username='a')
         # Force login
         c.force_login(user_a)
         response = c.get("")
@@ -37,7 +37,7 @@ class IndexViewTest(TestCase):
 
     def test_navbar_urls_corret(self):
         c = Client()
-        user_a = User.objects.get(id=1)
+        user_a = User.objects.get(username='a')
         c.force_login(user_a)
         response = c.get(reverse('mypage'))
         self.assertEqual(response.status_code, 200)

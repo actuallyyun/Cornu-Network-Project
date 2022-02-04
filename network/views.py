@@ -119,7 +119,8 @@ def following(request):
 @login_required
 def mypage(request):
     # This page displays all the posts from this user herself
-    my_posts = Post.objects.filter(poster=request.user)
+    my_posts = Post.objects.filter(
+        poster=request.user).order_by('date_time_created')
     p = Paginator(my_posts, 10)
     page_number = request.GET.get('page')
     page_obj = p.get_page(page_number)
